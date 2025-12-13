@@ -1,0 +1,87 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "cmake",
+            "command": "build",
+            "group": "build",
+            "problemMatcher": ["$gcc"],
+            "detail": "Build the project locally",
+            "hide": true
+        },
+        {
+            "label": "Deploy to Raspberry Pi",
+            "type": "shell",
+            "command": "rsync -avz --progress ${config:RSYNC_FILES} ${config:TARGET_DEVICE}:${config:TARGET_FOLDER}",
+            "dependsOn": "Build",
+            "problemMatcher": [],
+            "detail": "Deploy files to Raspberry Pi using rsync",
+            "hide": true
+        },
+        {
+            "label": "Run on Raspberry Pi",
+            "type": "shell",
+            "command": "ssh ${config:TARGET_DEVICE} \"cd ${config:TARGET_FOLDER} && LD_LIBRARY_PATH=${config:TARGET_QT_LIB_FOLDER}:\\$LD_LIBRARY_PATH ${config:TARGET_FOLDER}/${config:APP_NAME}\"",
+            "dependsOn": "Deploy to Raspberry Pi",
+            "problemMatcher": [],
+            "detail": "Run the program on Raspberry Pi"
+        },
+        {
+            "label": "Run on Raspberry Pi Without Building",
+            "type": "shell",
+            "command": "ssh ${config:TARGET_DEVICE} \"cd ${config:TARGET_FOLDER} && LD_LIBRARY_PATH=${config:TARGET_QT_LIB_FOLDER}:\\$LD_LIBRARY_PATH ${config:TARGET_FOLDER}/${config:APP_NAME}\"",            "problemMatcher": [],
+            "detail": "Run the program on Raspberry Pi"
+        },
+        {
+            "label": "Start GDB Server",
+            "type": "shell",
+            "hide": true,
+            "command": "ssh ${config:TARGET_DEVICE} 'killall gdbserver; export LD_LIBRARY_PATH=${config:TARGET_QT_LIB_FOLDER}:$LD_LIBRARY_PATH; gdbserver :${config:DEBUG_PORT} ${config:TARGET_FOLDER}/${config:APP_NAME} ${config:CMD_LINE_ARGUMENTS}'",
+            "dependsOn": "Deploy to Raspberry Pi",
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^Starting GDB Server",
+                    "endsPattern": "^.*"
+                }
+            },
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Start GDB Server Without Building",
+            "type": "shell",
+            "hide": true,
+            "command": "ssh ${config:TARGET_DEVICE} 'killall gdbserver; export LD_LIBRARY_PATH=${config:TARGET_QT_LIB_FOLDER}:$LD_LIBRARY_PATH; gdbserver :${config:DEBUG_PORT} ${config:TARGET_FOLDER}/${config:APP_NAME} ${config:CMD_LINE_ARGUMENTS}'",
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^Starting GDB Server",
+                    "endsPattern": "^.*"
+                }
+            },
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}
