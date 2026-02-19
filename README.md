@@ -46,7 +46,7 @@ To send images to your smartphone you need to configure a Telegram bot:
 - Enter a username for your bot (e.g., `BOMKE_bot`).
 - Copy and save the **bot token** shown in the BotFather message.
 - Search for your bot, start a chat, and message it.
-- Open a new tab and go to [https://api.telegram.org/bot<YourBotToken>/getUpdates](https://api.telegram.org/bot<YourBotToken>/getUpdates). To get the ChatID replace in the url <YourBotToken> wiht your token from the BotFather.
+- Open a new tab and go to [https://api.telegram.org/botYourBotToken/getUpdates](https://api.telegram.org/bot<YourBotToken>/getUpdates). To get the ChatID replace in the url 'YourBotToken' wiht your token from the BotFather.
 - This will show you a `.json` file containing some information. If it's empty, message your bot again in Telegram Web and reload the page.
 - On this page, search for the bot name and find the **chat ID**. We need the chat ID and the bot token later.
 
