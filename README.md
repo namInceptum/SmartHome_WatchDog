@@ -9,7 +9,7 @@ When suspicious objects are detected, the system automatically sends images to y
 
 
 ### Video Tutorial:
-On my channel [BOMKE](https://https://youtu.be/02UeHkQm1bw)
+On my channel [BOMKE](https://www.youtube.com/watch?v=02UeHkQm1bw)
 
 ## Prerequisites
 
