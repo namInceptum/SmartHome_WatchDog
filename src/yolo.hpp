@@ -15,20 +15,16 @@
 extern std::string modelPath;
 
 // ONNX Runtime logging ID
-extern const char* logid;
+extern const char* logid; // in this case yolo_inference
 
 // Provider (CPU / CUDA etc.)-> on raspi cpu
 extern const char* provider;
 
 // Class IDs of objects we want to detect
-extern std::vector<int> obj_ids;
+extern std::vector<int> obj_ids; // we want to detect human = 0, bicycle = 1, car = 2, motorcycle 3, bus = 5, dog = 16,
 
 // Global YOLO inferencer
 extern YoloInferencer inferencer;
-
-// ----------------------------------------------------
-// Function declarations
-// ----------------------------------------------------
 
 // generate color for the image labeling of detected objects
 cv::Scalar generateRandomColor(int numChannels);

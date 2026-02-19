@@ -1,6 +1,7 @@
+
 cmake_minimum_required(VERSION 3.19)
 
-project(mango_bot LANGUAGES CXX)
+project(SmarthomeWatchdog LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -19,7 +20,7 @@ qt_standard_project_setup()
 find_package(OpenCV REQUIRED)
 
 # Define the executable and UI/Source files
-qt_add_executable(mango_bot
+qt_add_executable(SmarthomeWatchdog
     src/main.cpp
     src/mainwindow.cpp
     src/mainwindow.h
@@ -39,7 +40,6 @@ qt_add_executable(mango_bot
 # Telegram bot related imports
 add_subdirectory(libs/tgbot-cpp)  # This builds the tgbot library
 
-
 # Add UI files
 set(UI_FILES
     mainwindow.ui
@@ -48,9 +48,8 @@ set(UI_FILES
 # Link to the directory containing the static library
 link_directories(libs/tgbot-cpp/build)  # Ensure linker can find the static lib
 
-
 # Link necessary Qt libraries and tgbot
-target_link_libraries(mango_bot
+target_link_libraries(SmarthomeWatchdog
     PRIVATE
         Qt6::Core
         Qt6::Widgets
@@ -64,30 +63,20 @@ target_link_libraries(mango_bot
 )
 
 ## onnxruntime includes
-target_include_directories(mango_bot PRIVATE
+target_include_directories(SmarthomeWatchdog PRIVATE
     ${ONNXRUNTIME_DIR}/include)
 # Link ONNX Runtime library directory
-target_link_directories(mango_bot PRIVATE
+target_link_directories(SmarthomeWatchdog PRIVATE
     ${ONNXRUNTIME_DIR}/lib)
 ## install the yolo model
-# Install the YOLO model file into the "models" directory
-install(
-    FILES ${CMAKE_SOURCE_DIR}/models/yolov8.onnx
-    DESTINATION models
-)
+
 
 
 # Install rules
 include(GNUInstallDirs)
 
-install(TARGETS mango_bot
+install(TARGETS SmarthomeWatchdog
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-
-# Copy yolov8n.onnx to the output directory where the binary will be
-add_custom_command(TARGET mango_bot POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_SOURCE_DIR}/src/models/yolov8n.onnx"
-    $<TARGET_FILE_DIR:mango_bot>)

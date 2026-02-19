@@ -3,6 +3,12 @@
 // using opencv to show videostream from webcam
 // 
 ////////////////////////////////////////////////
+/**
+ *  MIT License
+ *  Copyright (c) E. Schilling
+ *  See accompanying LICENSE file
+ */
+
 
 #include "camera.h"
 #include <QDebug>
@@ -12,6 +18,8 @@
 #include "yolo.hpp"
 // include telegram to send images if an object is detected
 #include "telegram.h"
+
+
 
 Camera::Camera(QObject *parent)
     : QObject(parent),
@@ -37,9 +45,9 @@ bool Camera::startCamera(QLabel *targetLabel, int width, int height, int framera
     camHeight = height;
     camFps = framerate;
 
-    // Open the default webcam (device 0)
-    if (!cap.open(0)) {
+    if (!cap.open(0)) { // or !cap.open(0)
         qWarning() << "Failed to open webcam!";
+        
         return false;
     }
 
@@ -71,27 +79,29 @@ bool Camera::isCameraRunning() const
 
 void Camera::captureFrame()
 {
-    if (!cap.isOpened() || !displayLabel)
+    if (!cap.isOpened() || !displayLabel){
+        qDebug() << "Either camera not open or displayLabel does not exist";
         return;
+    }
 
     cv::Mat frame;
     cap >> frame; // the current camera frame
 
-    if (frame.empty())
+    if (frame.empty()){
         return;
+    }
+    if(rotate180){
+        cv::rotate(frame, frame, cv::ROTATE_180);
+        //frame = rotated;
+        }
+        
 
     // Convert BGR -> RGB
     cv::cvtColor(frame, frame, cv::COLOR_BGR2RGB);
 
     // do object detection on the frame
     auto [obj_detected, result_image] = detect(frame);
-    if (obj_detected){// we want to detect human, cars, dogs, bicycles, motorcycles
-        std::cout << "object detected" << std::endl;
-        frame = result_image;
-        telegramBot.send_frame(frame);
-    }
-
-    // prepare the frame for qt-widget
+    frame = result_image;
     QImage image(
         frame.data,
         frame.cols,
@@ -99,14 +109,56 @@ void Camera::captureFrame()
         frame.step,
         QImage::Format_RGB888
     );
+    
+    
+    if (obj_detected){// we want to detect human, cars, dogs, bicycles, motorcycles
+        std::cout << "object detected" << std::endl;
+        //frame = result_image;
+        if(send_detected_obj){
+            qDebug() << "image sending not configured";
+            telegramBot.send_frame(image);
+        }
+    }
 
-    lastFrame = image.copy();  // store a copy for get_frame()
+    lastFrame = image.copy();  // store a copy for get_frame() // QImage = image or Cv::Mat = frame
 
     // display live video on QLabel
     emit frameCaptured(lastFrame);
     displayLabel->setPixmap(QPixmap::fromImage(lastFrame));
+   
 }
 
+
+
+// for motion detection
+int Camera::compute_frame_difference(const cv::Mat& currentGray, const cv::Mat& prevGray)
+{
+    if (currentGray.empty() || prevGray.empty())
+        return 0; //no frames to compare
+
+    if (currentGray.size() != prevGray.size())
+        return 0; // frame must have same dimensions
+
+    cv::Mat diff; // resulting frame
+    cv::absdiff(currentGray, prevGray, diff);
+
+    double maxVal;
+    cv::minMaxLoc(diff, nullptr, &maxVal);
+
+    return static_cast<int>(maxVal);
+}
+
+///////// setter and getter
+
+void Camera::setRotate180(bool rotate){
+    this->rotate180 = rotate;
+    return;
+    }
+
+bool Camera::getRotate180(){
+    return this->rotate180;
+    }
+    
 QImage Camera::get_frame() const
 {
     return lastFrame;

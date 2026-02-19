@@ -1,3 +1,10 @@
+/**
+ *  MIT License
+ *  Copyright (c) E.Schilling
+ *  See accompanying LICENSE file
+ */
+
+
 // include local headder files
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -9,35 +16,26 @@
 
 #include <QPushButton>
 #include <QFile>
-
-// libraries for taking screenshot
-/*
-#include <QScreen>
-#include <QDateTime>
-#include <QFileDialog>
-#include <QImageWriter>
-#include <QMessageBox>
-#include <QDir>
-#include <QFile> */
-
 #include <iostream>
+
+// include standard library
+#include <filesystem> // for walking through folders
+#include <vector>
+#include <string>
+#include <iostream>
+namespace fs = std::filesystem;
 
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::MainWindow) //, telegramBot(token), chat_id_leo(chatId)
-{
+    : QMainWindow(parent), ui(new Ui::MainWindow){
+
     ui->setupUi(this);
 
     // start camera
     camera = new Camera(this);
     camera->startCamera(ui->videoLabel);
-
-    //connect(camera, &Camera::frameCaptured,this, &MainWindow::onFrameCaptured);
-    // Set the default settings
-    this->setupSettings();
-
-
+    telegramBot.setCamera(camera);
     
     // send image if the button send_frame is clicked -> just for fun
     connect(ui->send_frame_btn, &QPushButton::clicked, this, &MainWindow::on_send_frame_btn);
@@ -53,21 +51,11 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::setupSettings()
-{
-    // Set items needed for QSettings  -> real information not needed here
-    QCoreApplication::setOrganizationName("BOMKE");
-    QCoreApplication::setOrganizationDomain("None");
-    QCoreApplication::setApplicationName("SmartHome WatchDog");
-    // Create the object to access settings
-    QSettings settings;
-}
-
-
 void MainWindow::on_send_frame_btn(){
 
     QImage frame = camera->get_frame();
-    QString filePath = "/tmp/manual.jpg";
+
+    QString filePath = "/data/manual.jpg";
 
     // Check if the file already exists
     QFile file(filePath);
@@ -77,7 +65,7 @@ void MainWindow::on_send_frame_btn(){
     }
     frame.save(filePath);
 
-    telegramBot.send_photo("/tmp/manual.jpg", "image/jpeg");
+    telegramBot.send_photo("/data/manual.jpg", "image/jpeg");
 
 }
 
@@ -99,15 +87,5 @@ void MainWindow::on_cancel_app_btn(){
 
 }
 
-void MainWindow::onFrameCaptured(const QImage &img)
-{
-    /*
-    QString tempPath = "/tmp/captured.jpg";
-    img.save(tempPath, "JPG");
-
-    telegramBot.send_photo(tempPath.toStdString(),"image/jpeg");
-
-    qDebug() << "Photo sent to Telegram!"; */
-}
 
 

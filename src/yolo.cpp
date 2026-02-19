@@ -12,7 +12,7 @@
 namespace fs = std::filesystem;
 
 // define constants
-std::string modelPath = fs::current_path().string() + "/yolov8n.onnx";
+std::string modelPath =  fs::current_path().string() + "/models/yolov8n.onnx";
 const char* logid = "yolo_inference";
 const char* provider = "CPU";
 std::vector<int> obj_ids {0, 1, 2, 3, 5, 16}; // we want to detect human = 0, bicycle = 1, car = 2, motorcycle 3, bus = 5, dog = 16,
@@ -55,7 +55,7 @@ std::pair<bool, cv::Mat> detect(cv::Mat image) {
 
     bool obj_detected = false;
 
-    std::vector<Detection> detections = inferencer.infer(image, 0.1, 0.5); // get result of object detection 
+    std::vector<Detection> detections = inferencer.infer(image, 0.1, 0.5); // get result of object detection, confid. threshold, out threshold
     
     for (const auto& detection : detections) {
         // skip if the detection confidence is < 75%

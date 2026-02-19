@@ -1,3 +1,9 @@
+/**
+ *  MIT License
+ *  Copyright (c) E.Schilling
+ *  See accompanying LICENSE file
+ */
+
 #include "mainwindow.h"
 #include "telegram.h"
 
@@ -18,11 +24,6 @@ int main(int argc, char *argv[])
     MainWindow w; //kivi_bot_token, chat_id_leo
     w.show();
     return a.exec();
-
-    // Sending a text message
-    telegramBot.send_txt_msg("Hello from your Smart Home Assistant!");
-    qDebug() << "msg has been sent";
-
 
     return 0;
    

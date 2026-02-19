@@ -1,6 +1,12 @@
 /********************************************************************************
 ** Definition of all required visual buttons and lables as well as corresponding variables
 ********************************************************************************/
+/**
+ *  MIT License
+ *  Copyright (c) E.Schilling
+ *  See accompanying LICENSE file
+ */
+
 
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
@@ -28,7 +34,10 @@ class Ui_MainWindow
 public:
     // main window as widget
     QWidget *centralWidget;
-
+        
+    // mainwindow label
+    QLabel *label;
+    
     //define button objects
     QPushButton *send_frame_btn;
     QPushButton *cancel_app_btn;
@@ -44,8 +53,15 @@ public:
         MainWindow->resize(800, 480); // screen dimension rspi
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName("centralWidget");
-
-
+        
+        // define label properties
+        label = new QLabel(centralWidget);
+        label->setObjectName("label");
+        label->setGeometry(QRect(140, 0, 400, 91));
+        label->setStyleSheet(QString::fromUtf8("QLabel{\n"
+"	font: 700 25pt \"Segoe UI\";\n"
+"	color: rgba(23, 135, 226, 1);\n"
+"}"));
         
         //// define buttons and menu options 
 
@@ -96,9 +112,9 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        // this retranslateUI function is usefull if you want to provide multilanguage application
-        // for the OAT english is ok, such we just hardcode the language above with the button and label definitions 
-        // like help_button->setText("Help");
+            
+            label->setText(QCoreApplication::translate("MainWindow", "Sweet Home", nullptr));
+        
     };
 
 };

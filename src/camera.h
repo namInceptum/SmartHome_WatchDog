@@ -1,3 +1,9 @@
+/**
+ *  MIT License
+ *  Copyright (c) E.Schilling
+ *  See accompanying LICENSE file
+ */
+
 #ifndef CAMERA_H
 #define CAMERA_H
 
@@ -16,7 +22,7 @@ class Camera : public QObject
 public:
     explicit Camera(QObject *parent = nullptr);
     ~Camera();
-
+    // start camera with preferred setup
     bool startCamera(QLabel *targetLabel, int width = 640, int height = 480, int framerate = 30);
     void stopCamera();
 
@@ -24,6 +30,11 @@ public:
 
     // Get current frame (as QImage)
     QImage get_frame() const;
+    void setRotate180(bool rotate);
+    bool getRotate180();
+    
+    bool send_detected_obj = true; // send frame if an object is detected
+    bool rotate180 = false; // rotate image
 
 signals:
     void frameCaptured(const QImage &image);   // emitted each frame
@@ -35,12 +46,16 @@ private:
     QTimer *timer;
     QLabel *displayLabel;
 
-    cv::VideoCapture cap;
-    bool running;
-
+    cv::VideoCapture cap; // for video stream
+    bool running; // checking if camera is running 
+    cv::Mat previous_frame; // used to compare last and current frame for motion detection
+    
     int camWidth;
     int camHeight;
     int camFps;
+    int compute_frame_difference(const cv::Mat& currentGray,const cv::Mat& prevGray);
+
+    
 
     QImage lastFrame;  // store latest frame
 };
