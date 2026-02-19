@@ -9,7 +9,7 @@ When suspicious objects are detected, the system automatically sends images to y
 
 
 ### Video Tutorial:
-Comming Soon on my channel [BOMKE](https://www.youtube.com/watch?v=65P0UOv7L74)
+On my channel [BOMKE](https://https://youtu.be/02UeHkQm1bw)
 
 ## Prerequisites
 
@@ -87,7 +87,11 @@ You can easily implement additional functionalities by following the pattern of 
 
 
 ### Example Images
+The small user interface shows the current video Stream.
+
 ![User Interface](/media/ui.jpg)
+
+If objects are detected you will get directly msgs on your telegram app.
 
 ![Sending of detected objects to telegram](/media/detect.jpg)
 
