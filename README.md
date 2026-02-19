@@ -87,7 +87,8 @@ You can easily implement additional functionalities by following the pattern of 
 
 
 ### Example Images
+![User Interface](/media/ui.jpg)
 
-[Image](/media/keyboard.png)
+![Sending of detected objects to telegram](/media/detect.jpg)
 
 
